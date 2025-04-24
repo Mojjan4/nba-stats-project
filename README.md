@@ -57,3 +57,9 @@ This project is designed to provide real-time NBA statistics in a user-friendly 
 ## Current Discussion:
 - Frontend design and UI component setup are still pending.
 - Enhancements to data visualization and real-time updates are planned for future development.
+
+## Pipelines Status
+
+**Main** - [![CI Pipeline](https://github.com/Mojjan4/nba-stats-project/actions/workflows/ci.yml/badge.svg)](https://github.com/Mojjan4/nba-stats-project/actions/workflows/ci.yml)
+
+**Development** - [![CI Pipeline](https://github.com/Mojjan4/nba-stats-project/actions/workflows/ci.yml/badge.svg?branch=development)](https://github.com/Mojjan4/nba-stats-project/actions/workflows/ci.yml)
