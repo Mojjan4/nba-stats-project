@@ -2,6 +2,7 @@ name: CI Pipeline
 
 on:
   pull_request:
+    types: [opened, edited, synchronize, reopened]
     branches: [ "main", "development" ]
   push:
     branches: [ "development" ]
@@ -19,13 +20,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Check if it's a documentation change (README.md)
-        if: |
-          contains(github.event.pull_request.files, 'README.md') &&
-          github.event.pull_request.changed_files == 1
+      - name: Auto-merge README-only PRs
+        if: github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'development'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "This PR only changes README.md. Merging..."
-          gh pr merge ${{ github.event.pull_request.number }} --merge
+          CHANGED_FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files -q ".files[].path")
+          echo "Changed files: $CHANGED_FILES"
+
+          if [[ "$CHANGED_FILES" == "README.md" ]]; then
+            echo "Only README.md changed. Attempting auto-merge..."
+            gh pr merge ${{ github.event.pull_request.number }} --merge
+          else
+            echo "Other files changed — skipping auto-merge."
+          fi
 
       - name: Set up JDK
         uses: actions/setup-java@v3
