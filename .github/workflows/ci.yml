@@ -19,6 +19,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Check if it's a documentation change (README.md)
+        if: |
+          contains(github.event.pull_request.files, 'README.md') &&
+          github.event.pull_request.changed_files == 1
+        run: |
+          echo "This PR only changes README.md. Merging..."
+          gh pr merge ${{ github.event.pull_request.number }} --merge
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
