@@ -4,10 +4,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class HelloController {
+public class NbaTestController {
 
-    @GetMapping("/api/hello")
-    public String hello() {
-        return "Hello from NBA Stats Backend!";
+    @GetMapping("/test")
+    public String testEndpoint() {
+        return "API is working!";
     }
 }
