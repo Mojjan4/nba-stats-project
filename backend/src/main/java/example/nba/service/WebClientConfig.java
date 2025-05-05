@@ -20,6 +20,7 @@ public class WebClientConfig {
                 .baseUrl("https://api-nba-v1.p.rapidapi.com")
                 .defaultHeader("x-rapidapi-key", rapidApiKey)
                 .defaultHeader("x-rapidapi-host", rapidApiHost)
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024))
                 .build();
     }
 }
