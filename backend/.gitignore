@@ -1,0 +1,14 @@
+# Maven
+target/
+*.log
+
+# IntelliJ / VS Code
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+
+# Spring Boot sensitive config
+/src/main/resources/application.properties

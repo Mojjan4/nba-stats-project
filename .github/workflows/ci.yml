@@ -1,0 +1,59 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [ "main", "development" ]
+  push:
+    branches: [ "development" ]
+
+jobs:
+  build-backend:
+    name: Build Java Backend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Auto-merge README-only PRs
+        if: github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'development'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CHANGED_FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files -q ".files[].path")
+          echo "Changed files: $CHANGED_FILES"
+
+          if [[ "$CHANGED_FILES" == "README.md" ]]; then
+            echo "Only README.md changed. Attempting auto-merge..."
+            gh pr merge ${{ github.event.pull_request.number }} --merge
+          else
+            echo "Other files changed — skipping auto-merge."
+          fi
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'  # Ensure Java 21
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Run tests
+        run: mvn test
+
+      - name: Build and package the backend
+        run: mvn package
