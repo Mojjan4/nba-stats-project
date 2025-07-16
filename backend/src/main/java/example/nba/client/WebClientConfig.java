@@ -1,4 +1,4 @@
-package com.example.nba.service;
+package com.example.nba.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
